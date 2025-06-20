@@ -41,14 +41,12 @@ const PageButton: React.FC<PageButtonProps> = ({ id, label, icon, isActive, setA
 
   // Dropdown and focus logic
   const [focused, setFocused] = useState(false);
-  const [dropdownOpen, setDropdownOpen] = useState(false);
   const wrapperRef = useRef<HTMLDivElement>(null);
 
   // Single Responsibility: handle button click
   const handleButtonClick = (e: React.MouseEvent) => {
     e.stopPropagation();
     setActive(id);
-    setDropdownOpen((prev) => !prev);
   };
 
   return (
@@ -65,12 +63,11 @@ const PageButton: React.FC<PageButtonProps> = ({ id, label, icon, isActive, setA
       onBlur={(e) => {
         if (!wrapperRef.current?.contains(e.relatedTarget)) {
           setFocused(false);
-          setDropdownOpen(false);
         }
       }}
     >
       {/* Dropdown above the button */}
-      {dropdownOpen && (
+      {focused && (
         <div
           tabIndex={-1}
           className="absolute bottom-full mb-2 w-56 rounded-lg border border-gray-200 bg-white shadow-lg z-10"
@@ -113,12 +110,11 @@ const PageButton: React.FC<PageButtonProps> = ({ id, label, icon, isActive, setA
           ${(focused || isActive === id) && "bg-white ring-1 ring-blue-200 shadow-blue-50"}
         `}
         onClick={handleButtonClick}
-        aria-expanded={dropdownOpen}
         aria-controls={`dropdown-${id}`}
       >
         <div className={`${(focused || isActive === id) && "text-yellow-500"}`}>{icon}</div>
         <span className={`text-sm font-medium ${(focused || isActive === id) && "text-black"}`}>{label}</span>
-        {(focused || dropdownOpen) && <MoreVertical className="w-4 h-4 text-gray-400" />}
+        {focused && <MoreVertical className="w-4 h-4 text-gray-400" />}
       </button>
     </div>
   );
